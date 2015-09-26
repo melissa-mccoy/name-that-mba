@@ -26,13 +26,13 @@ $(document).ready(function() {
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
+
   //Build View with 4 students, Choose chosen student, & Retrieve their image
   $.ajax({
     url: "graph.facebook.com/v2.2/289067147884089/members",
     }).done(function(data) {
       console.log(data);
     });
-  var students = GET /v2.2/{group-id}/members HTTP/1.1
   var students = [{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'}];//AJAX request
   var randomIndexes = getRandomInts(students.length,4);
   $('#1').html(students[randomIndexes[0]].name);
