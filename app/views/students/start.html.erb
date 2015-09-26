@@ -1,0 +1,72 @@
+<h1>Name That MBA</h1>
+<img id="photo" />
+<h2>Who is pictured above?</h2>
+<button id="1" class="btn btn-primary block m-b ans"></button>
+<button id="2" class="btn btn-primary block m-b ans"></button>
+<button id="3" class="btn btn-primary block m-b ans"></button>
+<button id="4" class="btn btn-primary block m-b ans"></button>
+<div id="responseMessage"></div>
+<button class="btn btn-primary block m-b">Next</button>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  //Setup FB SDK
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '150302955316986',
+      xfbml      : true,
+      version    : 'v2.4'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+  //Build View with 4 students, Choose chosen student, & Retrieve their image
+  $.ajax({
+    url: "graph.facebook.com/v2.2/289067147884089/members",
+    }).done(function(data) {
+      console.log(data);
+    });
+  var students = GET /v2.2/{group-id}/members HTTP/1.1
+  var students = [{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'}];//AJAX request
+  var randomIndexes = getRandomInts(students.length,4);
+  $('#1').html(students[randomIndexes[0]].name);
+  $('#2').html(students[randomIndexes[1]].name);
+  $('#3').html(students[randomIndexes[2]].name);
+  $('#4').html(students[randomIndexes[3]].name);
+  var chosenAnswerHTMLId = Math.floor(Math.random()*randomIndexes.length);
+  console.log("ChosenAnswerId "+ chosenAnswerHTMLId)
+  var chosenStudentIndex = randomIndexes[chosenAnswerHTMLId];
+  var chosenStudentFBId = students[chosenStudentIndex].facebook_id;
+  var chosenStudentFBPhotoURL = '<%= asset_path "headshot.jpg" %>' //get photo with id
+  $('#photo').attr("src",chosenStudentFBPhotoURL);
+
+  //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
+  $(".ans").click(function(e){
+      var clickedId = e.target.id;
+      console.log(clickedId == chosenAnswerHTMLId.toString())
+      if(clickedId == chosenAnswerHTMLId.toString()) {
+        $("#responseMessage").html('<div class="alert alert-success alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Correct</button></div>')
+      } else {
+        $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Incorrect</button></div>')
+      }
+  });
+
+  function getRandomInts(max,count) {
+    var chosenNums = [];
+    while(chosenNums.length < count){
+      var num=Math.floor(Math.random()*max); var alreadyChosen=false;
+      for(var i=0;i<chosenNums.length;i++) {
+        if(chosenNums[i]==num){alreadyChosen=true;break}
+      }
+      if(!alreadyChosen)chosenNums[chosenNums.length]=num;
+    }
+    return chosenNums
+  }
+});
+</script>
