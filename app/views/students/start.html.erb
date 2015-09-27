@@ -1,12 +1,12 @@
 <h1>Name That MBA</h1>
 <img id="photo" />
 <h2>Who is pictured above?</h2>
+<button id="0" class="btn btn-primary block m-b ans"></button>
 <button id="1" class="btn btn-primary block m-b ans"></button>
 <button id="2" class="btn btn-primary block m-b ans"></button>
 <button id="3" class="btn btn-primary block m-b ans"></button>
-<button id="4" class="btn btn-primary block m-b ans"></button>
 <div id="responseMessage"></div>
-<button class="btn btn-primary block m-b">Next</button>
+<button class="btn btn-primary block m-b" id="next">Next</button>
 
 <script src="//connect.facebook.net/en_US/all.js"></script>
 <script type="text/javascript">
@@ -32,7 +32,6 @@ $(document).ready(function() {
   //Student Model Class
 
   //Build View with 4 students, Choose chosen student, & Retrieve their image
-  var students = [];
   $.ajax({
     method: "GET",
     url: "/students",
@@ -41,30 +40,33 @@ $(document).ready(function() {
       console.log("Response successful")
       console.log(studentsJsonArray)
       startGame(studentsJsonArray);
-    // for(i=0;i<studentsJsonArray.length;i++) {
-    // }
+      $("#next").click(function(e){
+        $("#responseMessage").html("")
+        startGame(studentsJsonArray)
+      });
   });
 
   function startGame(students) {
     console.log(students)
     // //Game Controller
     var randomIndexes = getRandomInts(students.length,4);
-    $('#1').html(students[randomIndexes[0]].name);
-    $('#2').html(students[randomIndexes[1]].name);
-    $('#3').html(students[randomIndexes[2]].name);
-    $('#4').html(students[randomIndexes[3]].name);
+    $('#0').html(students[randomIndexes[0]].name);
+    $('#1').html(students[randomIndexes[1]].name);
+    $('#2').html(students[randomIndexes[2]].name);
+    $('#3').html(students[randomIndexes[3]].name);
     var chosenAnswerIndex = Math.floor(Math.random()*randomIndexes.length);
     var chosenStudent = students[randomIndexes[chosenAnswerIndex]];
     console.log("ChosenAnswerId "+ chosenAnswerIndex)
     console.log(chosenStudent)
-    // $('#photo').attr("src",chosenStudent.photo_url);
+    //Database Way
+    $('#photo').attr("src","https://"+chosenStudent.photo_url);
 
-
-    FB.api('/'+chosenStudent.facebook_id+'/picture', 'GET', {}, function(response) {
-      console.log("inside repsonse")
-      console.log(response)
-      $('#photo').attr("src",response.data.url);
-    })
+    //FBAPI Way
+    // FB.api('/'+chosenStudent.facebook_id+'/picture', 'GET', {}, function(response) {
+    //   console.log("inside repsonse")
+    //   console.log(response)
+    //   $('#photo').attr("src",response.data.url);
+    // })
     //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
     $(".ans").click(function(e){
         var clickedId = e.target.id;
@@ -75,6 +77,8 @@ $(document).ready(function() {
           $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Incorrect</button></div>')
         }
     });
+
+
 
   function getRandomInts(max,count) {
     var chosenNums = [];

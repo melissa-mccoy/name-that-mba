@@ -7,11 +7,11 @@
 # #   Mayor.create(name=> 'Emanuel', city=> cities.first)
 require 'csv'
 # READ FROM CSV & SEED DB
-CSV.foreach("fb_members_final.csv","r:windows-1250") do |row|
+CSV.foreach("fb_members_final_with_photos.csv","r:windows-1250") do |row|
    name = row[0]
    facebook_id = row[1]
-   # photo_url = row[2]
-   Student.create(name: name, facebook_id: facebook_id)
+   photo_url = row[2]
+   Student.create(name: name, facebook_id: facebook_id,photo_url: photo_url)
 end
 
 # TURN FB TO CSV
