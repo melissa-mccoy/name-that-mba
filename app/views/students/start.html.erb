@@ -1,4 +1,5 @@
 <h1>Name That MBA</h1>
+<h3 id="score">0</h3>
 <img id="photo" />
 <h2>Who is pictured above?</h2>
 <button id="0" class="btn btn-primary block m-b ans"></button>
@@ -8,90 +9,121 @@
 <div id="responseMessage"></div>
 <button class="btn btn-primary block m-b" id="next">Next</button>
 
-<!-- <script src="//connect.facebook.net/en_US/all.js"></script> -->
 <script type="text/javascript">
 $(document).ready(function() {
-  // //Setup FB SDK
-  // window.fbAsyncInit = function() {
-  //   FB.init({
-  //     appId      : '150302955316986',
-  //     xfbml      : true,
-  //     version    : 'v2.4'
-  //   });
 
-  //Initialize Game
-
-  Student = function(name,facebookID) {
-    this.name = name
-    this.facebookID = facebookID
+  //Add Shuffle Function to Array class
+  Array.prototype.shuffle = function() {
+    var input = this;
+    for (var i = input.length-1; i >=0; i--) {
+        var randomIndex = Math.floor(Math.random()*(i+1));
+        var itemAtIndex = input[randomIndex];
+        input[randomIndex] = input[i];
+        input[i] = itemAtIndex;
+    }
+    return input;
   }
 
-  Student.prototype = {
-
+  //Student Model
+  Student = function(name,facebookID,photoURL) {
+    this.name = name;
+    this.facebookID = facebookID;
+    this.photoURL = photoURL;
+    this.chosen = false;
   }
-  //Student Model Class
 
-  //Build View with 4 students, Choose chosen student, & Retrieve their image
-  $.ajax({
-    method: "GET",
-    url: "/students",
-    dataType: "json"
-  }).done(function(studentsJsonArray) {
-      console.log("Response successful")
-      console.log(studentsJsonArray)
-      startGame(studentsJsonArray);
+  //Game Model
+  Game = function() {
+    this.allStudents = []
+    this.remainingStudents = [];
+    this.photoURL = "";
+    this.score = 0;
+  }
+
+  Game.prototype = {
+    start: function() {
+      //Seed all students
+      $.ajax({
+        method: "GET",
+        url: "/students",
+        dataType: "json"
+      }).done(function(studentsJsonArray) {
+          console.log("Response successful")
+          console.log(studentsJsonArray)
+          this.createStudents(studentsJsonArray);
+          this.renderQuestion();
+      }.bind(this));
+      //Listener & actions on Next Button
       $("#next").click(function(e){
         $("#responseMessage").html("")
-        startGame(studentsJsonArray)
-      });
-  });
-
-  function startGame(students) {
-    console.log(students)
-    // //Game Controller
-    var randomIndexes = getRandomInts(students.length,4);
-    $('#0').html(students[randomIndexes[0]].name);
-    $('#1').html(students[randomIndexes[1]].name);
-    $('#2').html(students[randomIndexes[2]].name);
-    $('#3').html(students[randomIndexes[3]].name);
-    var chosenAnswerIndex = Math.floor(Math.random()*randomIndexes.length);
-    var chosenStudent = students[randomIndexes[chosenAnswerIndex]];
-    console.log("ChosenAnswerId "+ chosenAnswerIndex)
-    console.log(chosenStudent)
-    //Database Way
-    $('#photo').attr("src","https://"+chosenStudent.photo_url);
-
-    //FBAPI Way
-    // FB.api('/'+chosenStudent.facebook_id+'/picture', 'GET', {}, function(response) {
-    //   console.log("inside repsonse")
-    //   console.log(response)
-    //   $('#photo').attr("src",response.data.url);
-    // })
-    //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
-    $(".ans").click(function(e){
-        var clickedId = e.target.id;
-        console.log(clickedId == chosenAnswerIndex.toString())
-        if(clickedId == chosenAnswerIndex.toString()) {
-          $("#responseMessage").html('<div class="alert alert-success alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Correct</button></div>')
-        } else {
-          $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Incorrect</button></div>')
+        this.renderQuestion();
+      }.bind(this));
+      //Listener & actions on End & Save Button
+      $("#next").click(function(e){
+        $("#responseMessage").html("")
+        this.renderQuestion();
+      }.bind(this));
+    },
+    createStudents: function(studentsJsonArray) {
+      for(var i=1;i<studentsJsonArray.length;i++) {
+      this.allStudents.push(new Student(studentsJsonArray[i].name,studentsJsonArray[i].facebook_id,studentsJsonArray[i].photo_url));
+     }
+     console.log(this.allStudents)
+     this.remainingStudents = this.allStudents;
+    },
+    getStudentChoices: function(count) {
+      var studentChoices =[];
+      var studentIndexes =[];
+      //Get Chosen Student
+      var chosenStudentIndex = Math.floor(Math.random()*this.remainingStudents.length);
+      var chosenStudent = this.remainingStudents[chosenStudentIndex];
+      chosenStudent.chosen = true;
+      this.remainingStudents.splice(chosenStudentIndex, 1);
+      studentChoices.push(chosenStudent);
+      studentIndexes.push(chosenStudentIndex);
+      //Get Other Students
+      var totalStudentsCount = this.allStudents.length;
+      while(studentIndexes.length < count){
+        var index=Math.floor(Math.random()*totalStudentsCount);
+        var alreadyChosen=false;
+        for(var i=0;i<studentIndexes.length;i++) {
+          if(studentIndexes[i]==index){alreadyChosen=true;break}
         }
-    });
-
-
-
-  function getRandomInts(max,count) {
-    var chosenNums = [];
-    while(chosenNums.length < count){
-      var num=Math.floor(Math.random()*max); var alreadyChosen=false;
-      for(var i=0;i<chosenNums.length;i++) {
-        if(chosenNums[i]==num){alreadyChosen=true;break}
+        if(!alreadyChosen) {
+          studentIndexes.push(index);
+          studentChoices.push(this.allStudents[index]);
+        }
       }
-      if(!alreadyChosen)chosenNums[chosenNums.length]=num;
+      return studentChoices;
+    },
+    renderQuestion: function() {
+      var studentChoices = this.getStudentChoices(4);
+      var chosenStudent = studentChoices[0];
+      studentChoices.shuffle();
+      $('#0').html(studentChoices[0].name);
+      $('#1').html(studentChoices[1].name);
+      $('#2').html(studentChoices[2].name);
+      $('#3').html(studentChoices[3].name);
+      $('#photo').attr("src","https://"+chosenStudent.photoURL);
+      //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
+      $(".ans").click(function(e){
+        var clickedId = e.target.id;
+        if(studentChoices[Number(clickedId)].chosen == true) {
+          $("#responseMessage").html('<div class="alert alert-success alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">Correct :)</button></div>');
+          this.score = this.score+1;
+          console.log(this.score);
+          $("#score").html(this.score);
+        } else {
+          $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">Incorrect. The correct answer is '+chosenStudent.name+'</button></div>');
+        }
+        $(".ans").unbind("click");
+      }.bind(this));
     }
-    return chosenNums
   }
-};
-// };
+
+  // Start Game (Refactor ToDos: (1) divide functions into Game Controller & Game Model. (2) move code into asset pipeline)
+  var game = new Game()
+  game.start()
+
 });
 </script>
