@@ -11,8 +11,8 @@
 <script src="//connect.facebook.net/en_US/all.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-  //Setup FB SDK
-window.fbAsyncInit = function() {
+  // //Setup FB SDK
+  window.fbAsyncInit = function() {
     FB.init({
       appId      : '150302955316986',
       xfbml      : true,
@@ -27,43 +27,60 @@ window.fbAsyncInit = function() {
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 
-  //Build View with 4 students, Choose chosen student, & Retrieve their image
-  var myAccessToken = 'CAACIsyJCpvoBALkhqbDVeF5ZBs3ZA3E7vIS9CLrDfZCdoAK0ZAKXVde4SVicyRDWcYdZAxMZCgSaoiqqyVuE7rsdc3DB42DfxPyigGH6lrLUZBc3B2Lfn1Ul0OpPiwuJNgWAGQrWVf3od3tJlR18XuzGrJnxPNZANv0UlFFtX81wh4cyfi3JPpJh8LXbzrAcma6lEXK426aLrKZAaZB14q9jqZA'
-  var students = [];
-  var count = 0;
-  while(count < 30) {
-    FB.api('/289067147884089/members?limit=800&offset=0&access_token='+myAccessToken, 'GET', {},
-      function(response) {
-        console.log("inside repsonse")
-        console.log(response)
-        students.concat(response.data);
-        count = count + 1;
-      }
-    );
+  //Initialize Game
+
+  Student = function(name,facebookID) {
+    this.name = name
+    this.facebookID = facebookID
   }
 
-  var randomIndexes = getRandomInts(students.length,4);
-  $('#1').html(students[randomIndexes[0]].name);
-  $('#2').html(students[randomIndexes[1]].name);
-  $('#3').html(students[randomIndexes[2]].name);
-  $('#4').html(students[randomIndexes[3]].name);
-  var chosenAnswerHTMLId = Math.floor(Math.random()*randomIndexes.length);
-  console.log("ChosenAnswerId "+ chosenAnswerHTMLId)
-  var chosenStudentIndex = randomIndexes[chosenAnswerHTMLId];
-  var chosenStudentFBId = students[chosenStudentIndex].facebook_id;
-  var chosenStudentFBPhotoURL = '<%= asset_path "headshot.jpg" %>' //get photo with id
-  $('#photo').attr("src",chosenStudentFBPhotoURL);
+  Student.prototype = {
 
-  //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
-  $(".ans").click(function(e){
-      var clickedId = e.target.id;
-      console.log(clickedId == chosenAnswerHTMLId.toString())
-      if(clickedId == chosenAnswerHTMLId.toString()) {
-        $("#responseMessage").html('<div class="alert alert-success alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Correct</button></div>')
-      } else {
-        $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Incorrect</button></div>')
-      }
+  }
+  //Student Model Class
+
+  //Build View with 4 students, Choose chosen student, & Retrieve their image
+  var students = [];
+  $.ajax({
+    method: "GET",
+    url: "/students",
+    dataType: "json"
+  }).done(function(studentsJsonArray) {
+      startGame(studentsJsonArray);
+    // for(i=0;i<studentsJsonArray.length;i++) {
+    // }
   });
+
+  function startGame(students) {
+    console.log(students)
+    // //Game Controller
+    var randomIndexes = getRandomInts(students.length,4);
+    $('#1').html(students[randomIndexes[0]].name);
+    $('#2').html(students[randomIndexes[1]].name);
+    $('#3').html(students[randomIndexes[2]].name);
+    $('#4').html(students[randomIndexes[3]].name);
+    var chosenAnswerIndex = Math.floor(Math.random()*randomIndexes.length);
+    var chosenStudent = students[randomIndexes[chosenAnswerIndex]];
+    console.log("ChosenAnswerId "+ chosenAnswerIndex)
+    console.log(chosenStudent)
+    // $('#photo').attr("src",chosenStudent.photo_url);
+
+
+    FB.api('/'+chosenStudent.facebook_id+'/picture', 'GET', {}, function(response) {
+      console.log("inside repsonse")
+      console.log(response)
+      $('#photo').attr("src",response.data.url);
+    })
+    //Add Listeners to Answer Choices & specify if correct/incorrect when clicked
+    $(".ans").click(function(e){
+        var clickedId = e.target.id;
+        console.log(clickedId == chosenAnswerIndex.toString())
+        if(clickedId == chosenAnswerIndex.toString()) {
+          $("#responseMessage").html('<div class="alert alert-success alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Correct</button></div>')
+        } else {
+          $("#responseMessage").html('<div id="incorrect" class="alert alert-danger alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">× Incorrect</button></div>')
+        }
+    });
 
   function getRandomInts(max,count) {
     var chosenNums = [];
@@ -76,6 +93,7 @@ window.fbAsyncInit = function() {
     }
     return chosenNums
   }
+};
 };
 });
 </script>
