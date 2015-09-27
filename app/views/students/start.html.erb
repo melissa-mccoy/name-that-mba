@@ -8,16 +8,16 @@
 <div id="responseMessage"></div>
 <button class="btn btn-primary block m-b">Next</button>
 
+<script src="//connect.facebook.net/en_US/all.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
   //Setup FB SDK
-  window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
     FB.init({
       appId      : '150302955316986',
       xfbml      : true,
       version    : 'v2.4'
     });
-  };
 
   (function(d, s, id){
      var js, fjs = d.getElementsByTagName(s)[0];
@@ -28,12 +28,20 @@ $(document).ready(function() {
    }(document, 'script', 'facebook-jssdk'));
 
   //Build View with 4 students, Choose chosen student, & Retrieve their image
-  $.ajax({
-    url: "graph.facebook.com/v2.2/289067147884089/members",
-    }).done(function(data) {
-      console.log(data);
-    });
-  var students = [{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'},{name:'bob',facebook_id:'bobby'}];//AJAX request
+  var myAccessToken = 'CAACIsyJCpvoBALkhqbDVeF5ZBs3ZA3E7vIS9CLrDfZCdoAK0ZAKXVde4SVicyRDWcYdZAxMZCgSaoiqqyVuE7rsdc3DB42DfxPyigGH6lrLUZBc3B2Lfn1Ul0OpPiwuJNgWAGQrWVf3od3tJlR18XuzGrJnxPNZANv0UlFFtX81wh4cyfi3JPpJh8LXbzrAcma6lEXK426aLrKZAaZB14q9jqZA'
+  var students = [];
+  var count = 0;
+  while(count < 30) {
+    FB.api('/289067147884089/members?limit=800&offset=0&access_token='+myAccessToken, 'GET', {},
+      function(response) {
+        console.log("inside repsonse")
+        console.log(response)
+        students.concat(response.data);
+        count = count + 1;
+      }
+    );
+  }
+
   var randomIndexes = getRandomInts(students.length,4);
   $('#1').html(students[randomIndexes[0]].name);
   $('#2').html(students[randomIndexes[1]].name);
@@ -68,5 +76,6 @@ $(document).ready(function() {
     }
     return chosenNums
   }
+};
 });
 </script>
