@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20150925225329) do
     t.string   "name",        null: false
     t.string   "facebook_id", null: false
     t.string   "section"
+    t.string   "photo_url"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

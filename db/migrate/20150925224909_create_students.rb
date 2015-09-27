@@ -4,6 +4,7 @@ class CreateStudents < ActiveRecord::Migration
       t.string :name, null:false
       t.string :facebook_id, null:false
       t.string :section
+      t.string :photo_url
       t.timestamps
     end
   end
