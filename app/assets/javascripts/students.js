@@ -1,15 +1,3 @@
-<h1>Name That MBA</h1>
-<img id="photo" />
-<h2>Who is pictured above?</h2>
-<button id="1" class="btn btn-primary block m-b ans"></button>
-<button id="2" class="btn btn-primary block m-b ans"></button>
-<button id="3" class="btn btn-primary block m-b ans"></button>
-<button id="4" class="btn btn-primary block m-b ans"></button>
-<div id="responseMessage"></div>
-<button class="btn btn-primary block m-b">Next</button>
-
-<script src="//connect.facebook.net/en_US/all.js"></script>
-<script type="text/javascript">
 $(document).ready(function() {
   // //Setup FB SDK
   window.fbAsyncInit = function() {
@@ -90,4 +78,3 @@ $(document).ready(function() {
 };
 };
 });
-</script>
