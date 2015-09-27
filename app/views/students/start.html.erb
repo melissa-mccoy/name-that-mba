@@ -46,6 +46,8 @@ $(document).ready(function() {
     url: "/students",
     dataType: "json"
   }).done(function(studentsJsonArray) {
+      console.log("Response successful")
+      console.log(studentsJsonArray)
       startGame(studentsJsonArray);
     // for(i=0;i<studentsJsonArray.length;i++) {
     // }
