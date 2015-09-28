@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NameThatMba</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Oxford MBA 2016 Name-That-MBA Quiz Game">
+    <meta name="author" content="Melissa McCoy">
 
-<%= yield %>
+    <title>Oxford MBA 2016 Name-That-MBA Quiz Game</title>
+
+    <%= stylesheet_link_tag params[:controller] if ::Rails.application.assets.find_asset("#{params[:controller]}.css") %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+</head>
+<body class="top-navigation">
+
+    <div id="wrapper" class="<%= params[:controller] %>.<%= params[:action] %>">
+
+        <div id="page-wrapper" class="gray-bg <%= @extra_class %>">
+
+            <%= render 'layouts/topnavbar' %>
+
+            <%= yield %>
+
+            <%= render 'layouts/footer' %>
+
+        </div>
+
+    </div>
+
+    <%= javascript_include_tag params[:controller] if ::Rails.application.assets.find_asset("#{params[:controller]}.js") %>
+    <%= yield :javascript %>
 
 </body>
 </html>
