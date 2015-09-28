@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-  root 'students#start'
-  resources :students
+  root 'games#dashboard'
+  resources :students, only: [:index]
+  resources :games
+  get "/dashboard", to: "games#dashboard", as: "dashboard"
 end
