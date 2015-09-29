@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150927221516) do
   create_table "games", force: true do |t|
     t.string   "name",       null: false
     t.integer  "score",      null: false
+    t.string   "game_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

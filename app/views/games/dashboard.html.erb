@@ -6,9 +6,13 @@
                 <h1><strong>Can You Name Your Class?</strong></h1>
               </div>
               <div class="ibox-content" style="height:425px">
-                  <%= image_tag "dinasour_circle.png", width: "40%", style:"margin:20px 0;"%>
-                    <h3 style="margin:10px">Choose classmates based on photos.<bR>Breakdown by section coming soon.</h3>
-                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'Start Game', new_game_path, style:"color:#fff" %></button>
+                  <%= image_tag "dinasour_circle.png", width: "30%", style:"margin:20px 0;"%>
+                    <h3 style="margin:10px">Choose classmates based on photos.</h3>
+                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'Section A', new_a_game_path, style:"color:#fff" %></button>
+                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'Section B', new_b_game_path, style:"color:#fff" %></button>
+                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'Section C', new_c_game_path, style:"color:#fff" %></button>
+                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'Section D', new_d_game_path, style:"color:#fff" %></button>
+                    <button class="btn btn-primary dim" style="margin:10px"><%= link_to 'All Students', new_game_path, style:"color:#fff" %></button>
               </div>
             </div>
         </div>
@@ -18,8 +22,8 @@
                 <h1><strong>Do You Know Your Class?</strong></h1>
               </div>
               <div class="ibox-content" style="height:425px">
-                  <%= image_tag "class_circle.png", width: "40%", style:"margin:20px 0;" %>
-                  <h3 style="margin:10px">Choose classmates based on personal facts from Facebook.<br>Can also submit facts about each other.</h3>
+                  <%= image_tag "class_circle.png", width: "30%", style:"margin:20px 0;" %>
+                  <h3 style="margin:10px"><br>Choose classmates based on personal facts from Facebook.<br>Can also submit facts about each other.</h3>
                   <h3 style="font-size:18px;"><br>Coming Soon</h3>
               </div>
             </div>

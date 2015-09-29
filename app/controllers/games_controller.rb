@@ -10,6 +10,22 @@ class GamesController < ApplicationController
     @game = Game.new;
   end
 
+  def new_a
+    @game = Game.new;
+  end
+
+  def new_b
+    @game = Game.new;
+  end
+
+  def new_c
+    @game = Game.new;
+  end
+
+  def new_d
+    @game = Game.new;
+  end
+
   def create
     @game = Game.create!(game_params)
     redirect_to games_path
@@ -17,6 +33,6 @@ class GamesController < ApplicationController
 
   private
     def game_params
-      params.require(:game).permit(:name, :score)
+      params.require(:game).permit(:name, :score, :game_type)
     end
 end

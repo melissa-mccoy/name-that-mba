@@ -10,6 +10,7 @@
             <tr>
                 <th class="footable-visible footable-first-column footable-sortable text-center">Name</th>
                 <th class="footable-visible footable-sortable text-center">Score</th>
+                <th class="footable-visible footable-sortable text-center">Game Type</th>
                 <th data-hide="phone,tablet" class="footable-visible footable-last-column footable-sortable text-center">Date & Time</th>
             </tr>
           </thead>
@@ -18,6 +19,7 @@
               <tr class="gradeX footable-even" style="display: table-row;">
                 <td class="footable-visible footable-first-column"><span class="footable-toggle"></span><strong><%= game.name %></strong></td>
                 <td class="footable-visible"><span class="footable-toggle"></span><%= game.score %></td>
+                <td class="footable-visible"><span class="footable-toggle"></span><%= game.game_type %></td>
                 <td class="center footable-visible footable-last-column"><span class="footable-toggle"></span><%= game.created_at.strftime("%m/%d/%Y") %>, <%= game.created_at.strftime("%I:%M%p") %></td>
               </tr>
             <% end %>
