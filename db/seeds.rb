@@ -6,13 +6,22 @@
 # #   cities = City.create([{ name=> 'Chicago' }, { name=> 'Copenhagen' }])
 # #   Mayor.create(name=> 'Emanuel', city=> cities.first)
 require 'csv'
-# READ FROM CSV & SEED DB
-CSV.foreach("fb_members_final_with_photos.csv","r:windows-1250") do |row|
+
+# READ FROM CSV with Josh Photos
+CSV.foreach("members_final.csv","r:windows-1250") do |row|
    name = row[0]
-   facebook_id = row[1]
-   photo_url = row[2]
+   photo_url = row[1]
+   facebook_id = row[2]
    Student.create(name: name, facebook_id: facebook_id,photo_url: photo_url)
 end
+
+# READ FROM CSV & SEED DB
+# CSV.foreach("fb_members_final_with_photos.csv","r:windows-1250") do |row|
+#    name = row[0]
+#    facebook_id = row[1]
+#    photo_url = row[2]
+#    Student.create(name: name, facebook_id: facebook_id,photo_url: photo_url)
+# end
 
 # TURN FB TO CSV
 
